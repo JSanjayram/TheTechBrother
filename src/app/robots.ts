@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/admin/',
     },
-    sitemap: 'https://sanjayramj.com/sitemap.xml',
+    sitemap: 'https://thetechbrother.netlify.app/sitemap.xml',
   }
 }

@@ -134,7 +134,9 @@ const Experience = () => {
           className="text-center mt-12"
         >
           <motion.a
-            href="#"
+            href="https://www.linkedin.com/in/sanjay-ram-j"
+            target="_blank"
+            rel="noopener noreferrer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-block px-8 py-3 bg-primary-600 text-white rounded-full font-semibold hover:bg-primary-700 transition-colors"

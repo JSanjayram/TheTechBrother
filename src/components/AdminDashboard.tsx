@@ -481,6 +481,15 @@ export default function AdminDashboard() {
                             <Plus size={16} />
                           </motion.button>
                           <motion.button
+                            onClick={() => setEditingCategory(category)}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            title="Edit Category"
+                          >
+                            <Edit size={16} />
+                          </motion.button>
+                          <motion.button
                             onClick={() => handleDeleteCategory(category.id)}
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}

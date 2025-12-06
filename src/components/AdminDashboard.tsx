@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { LogOut, Plus, Edit, Trash2, Save, X, Search, Filter, Eye, Settings, BarChart3, Users, FolderOpen, Menu } from 'lucide-react'
 
-import { getAllProjects, getAllExperience, getAllSkills, getAllCategories, addProject, updateProject, deleteProject, addSkill, updateSkill, deleteSkill, addCategory, updateCategory, deleteCategory } from '@/lib/adminService'
-import { Project, Experience, Skill, Category } from '@/types/portfolio'
+import { getAllProjects, getAllExperience, getAllSkills, getAllCategories, addProject, updateProject, deleteProject, addSkill, updateSkill, deleteSkill, addCategory, updateCategory, deleteCategory, getAllAITools, addAITool, updateAITool, deleteAITool } from '@/lib/adminService'
+import { Project, Experience, Skill, Category, AITool } from '@/types/portfolio'
 
 export default function AdminDashboard() {
 
@@ -20,14 +20,16 @@ export default function AdminDashboard() {
       window.location.href = '/admin'
     }
   }
-  const [activeTab, setActiveTab] = useState<'projects' | 'experience' | 'skills'>('projects')
+  const [activeTab, setActiveTab] = useState<'projects' | 'experience' | 'skills' | 'aitools'>('projects')
   const [projects, setProjects] = useState<Project[]>([])
   const [skills, setSkills] = useState<Skill[]>([])
   const [categories, setCategories] = useState<Category[]>([])
+  const [aiTools, setAITools] = useState<AITool[]>([])
   const [loading, setLoading] = useState(true)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
+  const [editingAITool, setEditingAITool] = useState<AITool | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null)
   const [showAddCategory, setShowAddCategory] = useState(false)
@@ -53,11 +55,13 @@ export default function AdminDashboard() {
       const projectsData = await getAllProjects()
       const skillsData = await getAllSkills()
       const categoriesData = await getAllCategories()
+      const aiToolsData = await getAllAITools()
       console.log('Loaded projects:', projectsData)
       console.log('Loaded categories:', categoriesData)
       setProjects(projectsData)
       setSkills(skillsData)
       setCategories(categoriesData)
+      setAITools(aiToolsData)
     } catch (error) {
       console.error('Error loading data:', error)
     }
@@ -180,7 +184,7 @@ export default function AdminDashboard() {
         </div>
         
         <nav className="p-6 pb-20">
-          {[{id: 'projects', label: 'Projects', icon: FolderOpen}, {id: 'experience', label: 'Experience', icon: BarChart3}, {id: 'skills', label: 'Skills', icon: Users}].map((item) => {
+          {[{id: 'projects', label: 'Projects', icon: FolderOpen}, {id: 'experience', label: 'Experience', icon: BarChart3}, {id: 'skills', label: 'Skills', icon: Users}, {id: 'aitools', label: 'AI Tools', icon: Settings}].map((item) => {
             const Icon = item.icon
             return (
               <motion.button
@@ -229,6 +233,10 @@ export default function AdminDashboard() {
               <div className="text-center">
                 <div className="text-2xl font-bold text-yellow-600">{categories.length}</div>
                 <div className="text-xs text-gray-400">Categories</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-600">{aiTools.length}</div>
+                <div className="text-xs text-gray-400">AI Tools</div>
               </div>
             </div>
           </div>
@@ -455,6 +463,80 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* AI Tools List */}
+          {activeTab === 'aitools' && (
+            <div className="space-y-4">
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-400 mx-auto"></div>
+                  <p className="text-gray-300 mt-4">Loading...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-end mb-4">
+                    <motion.button
+                      onClick={() => setShowAddForm(true)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex items-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm"
+                    >
+                      <Plus size={16} className="mr-2" />
+                      Add AI Tool
+                    </motion.button>
+                  </div>
+                  {aiTools.map((tool) => (
+                    <motion.div
+                      key={tool.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-gray-800/50 rounded-lg p-4 border border-gray-700"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                          <div className="flex items-center mb-2">
+                            <span className="text-3xl mr-3">{tool.icon}</span>
+                            <h4 className="text-lg font-semibold text-white">{tool.name}</h4>
+                            {tool.featured && (
+                              <span className="ml-2 px-2 py-1 bg-yellow-400 text-black text-xs rounded">Featured</span>
+                            )}
+                          </div>
+                          <p className="text-gray-300 mb-2">{tool.description}</p>
+                          <div className="flex space-x-4 text-sm text-gray-400">
+                            <span>Category: {tool.category}</span>
+                            <span>Order: {tool.order}</span>
+                          </div>
+                        </div>
+                        <div className="flex space-x-2 ml-4">
+                          <motion.button
+                            onClick={() => setEditingAITool(tool)}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                          >
+                            <Edit size={16} />
+                          </motion.button>
+                          <motion.button
+                            onClick={async () => {
+                              if (confirm('Delete this AI tool?')) {
+                                await deleteAITool(tool.id)
+                                loadData()
+                              }
+                            }}
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="p-2 bg-red-600 text-white rounded hover:bg-red-700"
+                          >
+                            <Trash2 size={16} />
+                          </motion.button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
+
           {/* Skills List Grouped by Category */}
           {activeTab === 'skills' && (
             <div className="space-y-8">
@@ -552,6 +634,17 @@ export default function AdminDashboard() {
       </div>
 
       {/* Add Form Modal */}
+      {showAddForm && activeTab === 'aitools' && (
+        <AddAIToolForm
+          onSubmit={async (data) => {
+            await addAITool(data)
+            loadData()
+            setShowAddForm(false)
+          }}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
+
       {showAddForm && activeTab === 'projects' && (
         <AddProjectForm
           onSubmit={handleAddProject}
@@ -605,8 +698,332 @@ export default function AdminDashboard() {
           onCancel={() => setEditingCategory(null)}
         />
       )}
+
+      {editingAITool && (
+        <EditAIToolForm
+          tool={editingAITool}
+          onSubmit={async (data) => {
+            await updateAITool(data.id, data)
+            loadData()
+            setEditingAITool(null)
+          }}
+          onCancel={() => setEditingAITool(null)}
+        />
+      )}
         </div>
       </div>
+  )
+}
+
+// Add AI Tool Form
+const AddAIToolForm = ({ onSubmit, onCancel }: { onSubmit: (data: Omit<AITool, 'id'>) => void, onCancel: () => void }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    tagline: '',
+    icon: '',
+    image: '',
+    category: '',
+    url: '',
+    featured: false,
+    order: 0
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit(formData)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-gray-800 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-white">Add AI Tool</h3>
+          <button onClick={onCancel} className="text-gray-400 hover:text-white">
+            <X size={24} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Tagline</label>
+            <input
+              type="text"
+              value={formData.tagline}
+              onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              placeholder="Short catchy tagline"
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Icon (emoji)</label>
+              <input
+                type="text"
+                value={formData.icon}
+                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+                placeholder="🤖"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Image URL</label>
+              <input
+                type="url"
+                value={formData.image}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+                placeholder="https://example.com/image.png"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Description - Optional</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              rows={3}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Category - Optional</label>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              placeholder="Coding, Design, etc."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">URL - Optional</label>
+            <input
+              type="url"
+              value={formData.url}
+              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+            />
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                className="mr-2"
+              />
+              <span className="text-gray-300">Featured Tool</span>
+            </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Order</label>
+              <input
+                type="number"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                className="w-20 px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-4 pt-4">
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+            >
+              Add Tool
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={onCancel}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
+  )
+}
+
+// Edit AI Tool Form
+const EditAIToolForm = ({ tool, onSubmit, onCancel }: { tool: AITool, onSubmit: (data: AITool) => void, onCancel: () => void }) => {
+  const [formData, setFormData] = useState(tool)
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit(formData)
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        className="bg-gray-800 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-xl font-bold text-white">Edit AI Tool</h3>
+          <button onClick={onCancel} className="text-gray-400 hover:text-white">
+            <X size={24} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Name</label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Tagline</label>
+            <input
+              type="text"
+              value={formData.tagline}
+              onChange={(e) => setFormData({ ...formData, tagline: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              placeholder="Short catchy tagline"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Description - Optional</label>
+            <textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              rows={3}
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Icon (emoji) - Optional</label>
+              <input
+                type="text"
+                value={formData.icon || ''}
+                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+                placeholder="🤖"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Image URL - Optional</label>
+              <input
+                type="url"
+                value={formData.image || ''}
+                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+                placeholder="https://example.com/image.png"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">Category - Optional</label>
+            <input
+              type="text"
+              value={formData.category}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              placeholder="Coding, Design, etc."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-300 mb-2">URL - Optional</label>
+            <input
+              type="url"
+              value={formData.url}
+              onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+              className="w-full px-4 py-3 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+            />
+          </div>
+
+          <div className="flex items-center space-x-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.featured}
+                onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
+                className="mr-2"
+              />
+              <span className="text-gray-300">Featured Tool</span>
+            </label>
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Order</label>
+              <input
+                type="number"
+                value={formData.order}
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                className="w-20 px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400"
+              />
+            </div>
+          </div>
+
+          <div className="flex space-x-4 pt-4">
+            <motion.button
+              type="submit"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 bg-primary-600 text-white py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+            >
+              Update Tool
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={onCancel}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="flex-1 bg-gray-600 text-white py-3 rounded-lg font-semibold hover:bg-gray-700 transition-colors"
+            >
+              Cancel
+            </motion.button>
+          </div>
+        </form>
+      </motion.div>
+    </motion.div>
   )
 }
 

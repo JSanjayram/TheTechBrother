@@ -1,0 +1,92 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://thetechbrother.netlify.app/#sanjay",
+      "name": "Sanjay Ram",
+      "alternateName": ["Sanjayram", "Sanjay Ram J", "The Tech Brother", "Sanjay"],
+      "url": "https://thetechbrother.netlify.app",
+      "image": "https://thetechbrother.netlify.app/sanjay-profile.jpg",
+      "jobTitle": "Full Stack Developer",
+      "description": "Sanjay Ram (Sanjayram) is a professional Full Stack Developer specializing in React, Next.js, Node.js, Python, and modern web technologies. View Sanjay portfolio for projects and skills.",
+      "knowsAbout": [
+        "Full Stack Development",
+        "React Development",
+        "Next.js",
+        "Node.js",
+        "Python",
+        "MongoDB",
+        "Firebase",
+        "JavaScript",
+        "TypeScript",
+        "Web Development"
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Salem",
+        "addressRegion": "Tamil Nadu",
+        "addressCountry": "India"
+      },
+      "alumniOf": {
+        "@type": "EducationalOrganization",
+        "name": "Educational Institution"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://thetechbrother.netlify.app/#website",
+      "url": "https://thetechbrother.netlify.app",
+      "name": "Sanjay Ram Portfolio | Sanjayram | The Tech Brother",
+      "description": "Sanjay portfolio showcasing full stack development projects, skills, and experience. Sanjay Ram (Sanjayram) - Professional developer from Salem, Tamil Nadu.",
+      "publisher": {
+        "@id": "https://thetechbrother.netlify.app/#sanjay"
+      },
+      "inLanguage": "en-US",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://thetechbrother.netlify.app/?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://thetechbrother.netlify.app/#profilepage",
+      "url": "https://thetechbrother.netlify.app",
+      "name": "Sanjay Ram Portfolio - Full Stack Developer",
+      "description": "Professional portfolio of Sanjay Ram (Sanjayram), showcasing full stack development expertise, projects, and technical skills.",
+      "mainEntity": {
+        "@id": "https://thetechbrother.netlify.app/#sanjay"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://thetechbrother.netlify.app"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Sanjay Portfolio",
+          "item": "https://thetechbrother.netlify.app/#about"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Sanjay Projects",
+          "item": "https://thetechbrother.netlify.app/#projects"
+        },
+        {
+          "@type": "ListItem",
+          "position": 4,
+          "name": "Sanjay Skills",
+          "item": "https://thetechbrother.netlify.app/#skills"
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, getDoc, query, orderBy } from 'firebase/firestore'
 import { db } from './firebase'
-import { Project, Experience, Skill, Category } from '@/types/portfolio'
+import { Project, Experience, Skill, Category, AITool } from '@/types/portfolio'
 
 // Add new project
 export const addProject = async (project: Omit<Project, 'id'>): Promise<string> => {
@@ -99,4 +99,24 @@ export const getProjectById = async (id: string): Promise<Project | null> => {
   } else {
     return null
   }
+}
+
+// AI Tools functions
+export const addAITool = async (tool: Omit<AITool, 'id'>): Promise<string> => {
+  const docRef = await addDoc(collection(db, 'aitools'), tool)
+  return docRef.id
+}
+
+export const getAllAITools = async (): Promise<AITool[]> => {
+  const q = query(collection(db, 'aitools'), orderBy('order', 'asc'))
+  const querySnapshot = await getDocs(q)
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AITool))
+}
+
+export const updateAITool = async (id: string, tool: Partial<AITool>): Promise<void> => {
+  await updateDoc(doc(db, 'aitools', id), tool)
+}
+
+export const deleteAITool = async (id: string): Promise<void> => {
+  await deleteDoc(doc(db, 'aitools', id))
 }

@@ -32,6 +32,19 @@ export interface Category {
   order: number
 }
 
+export interface AITool {
+  id: string
+  name: string
+  description: string
+  tagline: string
+  icon?: string
+  image?: string
+  category: string
+  url: string
+  featured: boolean
+  order: number
+}
+
 export interface Skill {
   id: string
   name: string

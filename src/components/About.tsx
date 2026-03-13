@@ -12,7 +12,7 @@ const About = () => {
   ]
 
   return (
-    <section id="about" className="py-20 relative overflow-hidden">
+    <section id="about" className="py-20 relative overflow-hidden scroll-mt-20">
 
       <div className="relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -68,86 +68,53 @@ const About = () => {
             viewport={{ once: true }}
             className="relative flex justify-center"
           >
-            {/* Multi-layer Glow Effects */}
-            <div className="absolute inset-0 flex justify-center items-center">
-              <div className="w-96 h-96 bg-gradient-to-r from-primary-500/20 via-purple-500/20 to-primary-500/20 rounded-full blur-3xl animate-pulse"></div>
-            </div>
-            
-            {/* Expert Photo Frame */}
-            <div className="relative pulse-glow">
-              {/* Outer Hexagon with Enhanced Gradients */}
-              <div 
-                className="w-80 h-80 bg-gradient-to-br from-primary-400 via-purple-500 via-pink-500 to-primary-600 p-2 depth-shadow"
-                style={{
-                  clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
-                  background: 'linear-gradient(45deg, rgb(37, 99, 235), rgb(139, 92, 246), rgb(236, 72, 153), rgb(37, 99, 235))'
-                }}
-              >
-                {/* Middle Layer */}
-                <div 
-                  className="w-full h-full bg-gradient-to-br from-gray-800 to-gray-900 p-1 relative"
-                  style={{
-                    clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
-                  }}
-                >
-                  {/* Inner Hexagon */}
-                  <div 
-                    className="w-full h-full bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden group"
-                    style={{
-                      clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)'
-                    }}
-                  >
-                    {/* Expert Shimmer Effect */}
-                    <div 
-                      className="absolute inset-0 expert-shimmer"
-                      style={{
-                        background: 'linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.4), transparent)',
-                        backgroundSize: '200% 100%'
-                      }}
-                    ></div>
-                    
-                    {/* Rotating Particle Effect */}
-                    <div className="absolute inset-0">
-                      {[...Array(6)].map((_, i) => (
-                        <div
-                          key={i}
-                          className="absolute w-1 h-1 bg-primary-400 rounded-full"
-                          style={{
-                            top: '50%',
-                            left: '50%',
-                            transform: `rotate(${i * 60}deg) translateY(-120px)`,
-                            animation: `spin ${12 + i * 2}s linear infinite`
-                          }}
-                        ></div>
-                      ))}
-                    </div>
-                    
-                    {/* Photo Content with Enhanced Styling */}
-                    <div className="absolute inset-0 flex items-center justify-center z-10">
-                      <div className="text-center">
-                        <div className="relative mb-6">
-                          <div className="w-28 h-28 bg-gradient-to-br from-primary-500 via-purple-500 to-pink-500 rounded-full mx-auto flex items-center justify-center shadow-2xl overflow-hidden">
-                            <img 
-                              src="/IMG20240320140726.jpg" 
-                              alt="Sanjay Ram" 
-                              className="w-full h-full object-cover rounded-full relative z-10"
-                            />
-                          </div>
-                          {/* Orbiting Elements */}
-                          <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
-                            <div className="absolute top-0 left-1/2 w-2 h-2 bg-primary-400 rounded-full transform -translate-x-1/2 -translate-y-2"></div>
-                            <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-purple-400 rounded-full transform -translate-x-1/2 translate-y-2"></div>
-                          </div>
-                        </div>
-                        <p className="text-white font-bold text-xl mb-1">Sanjay Ram</p>
-                        <p className="text-primary-300 text-sm font-medium tracking-wider uppercase">Tech Brother</p>
-                        <div className="mt-3 flex justify-center space-x-1">
-                          {[...Array(3)].map((_, i) => (
-                            <div key={i} className="w-1 h-1 bg-primary-400 rounded-full animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
+            {/* Geometric Frame Container */}
+            <div className="relative">
+              {/* Animated Border Corners */}
+              <div className="absolute -inset-4 opacity-50">
+                <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-primary-500"></div>
+                <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-purple-500"></div>
+                <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-purple-500"></div>
+                <div className="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-primary-500"></div>
+              </div>
+              
+              {/* Main Frame */}
+              <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-2xl border border-white/10 shadow-2xl">
+                {/* Accent Lines */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent"></div>
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+                
+                {/* Photo Container */}
+                <div className="relative">
+                  {/* Glow Effect */}
+                  <div className="absolute -inset-2 bg-gradient-to-r from-primary-500/20 to-purple-500/20 rounded-full blur-xl"></div>
+                  
+                  {/* Protected Image */}
+                  <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-white/10 shadow-2xl protected-image">
+                    <img 
+                      src="/Src.png" 
+                      alt="Profile" 
+                      className="w-full h-full object-cover pointer-events-none select-none"
+                      draggable="false"
+                      onContextMenu={(e) => e.preventDefault()}
+                    />
+                    {/* Overlay Protection */}
+                    <div className="absolute inset-0 bg-transparent" onContextMenu={(e) => e.preventDefault()}></div>
+                  </div>
+                  
+                  {/* Decorative Dots */}
+                  <div className="absolute -top-2 -right-2 w-4 h-4 bg-primary-500 rounded-full"></div>
+                  <div className="absolute -bottom-2 -left-2 w-4 h-4 bg-purple-500 rounded-full"></div>
+                </div>
+                
+                {/* Info Section */}
+                <div className="mt-6 text-center">
+                  <h3 className="text-2xl font-bold text-white mb-1">Sanjay Ram</h3>
+                  <p className="text-primary-400 font-medium tracking-wide">The Tech Brother</p>
+                  <div className="mt-4 flex justify-center gap-2">
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }}></div>
                   </div>
                 </div>
               </div>

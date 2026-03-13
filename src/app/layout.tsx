@@ -77,6 +77,32 @@ export default function RootLayout({
             knowsAbout: ['React', 'Next.js', 'Node.js', 'Python', 'MongoDB', 'Firebase', 'Full Stack Development']
           })
         }} />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              // Disable right-click
+              document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+              });
+              
+              // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+              document.addEventListener('keydown', function(e) {
+                if (e.keyCode === 123 || 
+                    (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+                    (e.ctrlKey && e.keyCode === 85)) {
+                  e.preventDefault();
+                }
+              });
+              
+              // Disable text selection on images
+              document.addEventListener('selectstart', function(e) {
+                if (e.target.tagName === 'IMG') {
+                  e.preventDefault();
+                }
+              });
+            })();
+          `
+        }} />
       </head>
       <body className={inter.className}>
         <AuthProvider>

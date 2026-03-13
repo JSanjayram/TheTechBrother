@@ -50,7 +50,7 @@ const Contact = () => {
   ]
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden">
+    <section id="contact" className="py-20 relative overflow-hidden scroll-mt-20">
 
       <div className="relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -61,12 +61,11 @@ const Contact = () => {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <h2 className="text-heading font-bold mb-6">
             <span className="text-white">Get In </span><span className="text-primary-400">Touch</span>
           </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Ready to start your next project? Let's discuss how we can work together 
-            to bring your ideas to life.
+          <p className="text-body text-gray-400 max-w-2xl mx-auto leading-relaxed">
+            Have a project in mind? Let's collaborate and turn your vision into reality.
           </p>
         </motion.div>
 
@@ -78,8 +77,8 @@ const Contact = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h3 className="text-2xl font-bold mb-8 text-white">Let's Connect</h3>
-            <p className="text-gray-300 mb-8">
+            <h3 className="text-subheading font-bold mb-6 text-white">Let's Connect</h3>
+            <p className="text-body text-gray-300 mb-8 leading-relaxed">
               I'm always interested in hearing about new opportunities and exciting projects. 
               Whether you have a question or just want to say hi, feel free to reach out!
             </p>
@@ -100,8 +99,8 @@ const Contact = () => {
                     <info.icon className="text-white" size={20} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-white">{info.title}</h4>
-                    <p className="text-gray-300">{info.value}</p>
+                    <h4 className="text-body font-semibold text-white">{info.title}</h4>
+                    <p className="text-small text-gray-300">{info.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -117,7 +116,7 @@ const Contact = () => {
           >
             <form onSubmit={onSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="name" className="block text-small font-medium text-gray-300 mb-2">
                   Name
                 </label>
                 <input
@@ -133,7 +132,7 @@ const Contact = () => {
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="email" className="block text-small font-medium text-gray-300 mb-2">
                   Email
                 </label>
                 <input
@@ -149,7 +148,7 @@ const Contact = () => {
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                <label htmlFor="message" className="block text-small font-medium text-gray-300 mb-2">
                   Message
                 </label>
                 <textarea
@@ -166,13 +165,13 @@ const Contact = () => {
 
               {state.succeeded && (
                 <div className="p-4 bg-green-600/20 border border-green-600 rounded-lg mb-4">
-                  <p className="text-green-400 text-center">Message sent successfully! I'll get back to you soon.</p>
+                  <p className="text-small text-green-400 text-center">Message sent successfully! I'll get back to you soon.</p>
                 </div>
               )}
               
               {state.errors && (
                 <div className="p-4 bg-red-600/20 border border-red-600 rounded-lg mb-4">
-                  <p className="text-red-400 text-center">Failed to send message. Please try again.</p>
+                  <p className="text-small text-red-400 text-center">Failed to send message. Please try again.</p>
                 </div>
               )}
 

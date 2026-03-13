@@ -20,7 +20,7 @@ const Projects = () => {
   }, [])
 
   return (
-    <section id="projects" className="py-20 relative overflow-hidden">
+    <section id="projects" className="py-20 relative overflow-hidden scroll-mt-20">
 
       <div className="relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

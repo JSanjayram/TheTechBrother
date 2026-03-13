@@ -23,7 +23,6 @@ const SkillsStack = () => {
     fetchData()
   }, [])
 
-  // Group skills by category
   const groupedSkills = categories.reduce((acc, category) => {
     const categorySkills = skills.filter(skill => skill.categoryId === category.id)
     if (categorySkills.length > 0) {
@@ -33,87 +32,133 @@ const SkillsStack = () => {
   }, {} as Record<string, Skill[]>)
 
   return (
-    <section id="skills" className="py-20 relative overflow-hidden">
-      <div className="relative z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="text-white">Skills </span><span className="text-primary-400">Stack</span>
-            </h2>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-              My technical expertise organized by categories, showcasing the tools 
-              and technologies I use to build amazing projects.
-            </p>
-          </motion.div>
+    <section id="skills" className="py-24 px-4 scroll-mt-20">
+      <div className="max-w-6xl mx-auto">
+        {/* Header - Centered */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mb-20"
+        >
+          <h2 className="text-heading mb-6">
+            <span className="text-white">Skills </span>
+            <span className="text-gradient">Stack</span>
+          </h2>
+          <p className="text-body max-w-2xl mx-auto">
+            Technologies and tools I use to build exceptional digital experiences
+          </p>
+        </motion.div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-400"></div>
-              <p className="text-gray-300 mt-4">Loading skills...</p>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {Object.entries(groupedSkills).map(([category, categorySkills], index) => (
-                <motion.div
-                  key={category}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative group"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 via-purple-500/10 to-blue-500/10 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-                  <div className="relative glass-effect rounded-2xl p-8 border border-gray-700/50 group-hover:border-primary-400/50 transition-all duration-500">
-                    <div className="flex items-center justify-center mb-8">
-                      <div className="w-2 h-2 bg-primary-400 rounded-full mr-3 animate-pulse"></div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors duration-300">
-                        {category}
-                      </h3>
-                      <div className="w-2 h-2 bg-primary-400 rounded-full ml-3 animate-pulse"></div>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                      {categorySkills.map((skill, skillIndex) => (
-                        <motion.div
-                          key={skill.id}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          whileInView={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.5, delay: skillIndex * 0.05 }}
-                          viewport={{ once: true }}
-                          whileHover={{ scale: 1.08, y: -8 }}
-                          className="relative bg-gradient-to-br from-gray-800/60 to-gray-900/60 rounded-xl p-5 text-center border border-gray-700/50 hover:border-primary-400/70 transition-all duration-300 backdrop-blur-sm group/skill"
-                        >
-                          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-purple-500/5 rounded-xl opacity-0 group-hover/skill:opacity-100 transition-opacity duration-300"></div>
-                          <div className="relative z-10">
-                            <div className="text-4xl mb-3 transform group-hover/skill:scale-110 transition-transform duration-300">{skill.icon}</div>
-                            <h4 className="text-white font-semibold mb-3 group-hover/skill:text-primary-300 transition-colors duration-300">{skill.name}</h4>
-                            <div className="w-full bg-gray-700/60 rounded-full h-2.5 mb-2 overflow-hidden">
-                              <motion.div 
-                                className="bg-gradient-to-r from-primary-500 via-purple-500 to-blue-500 h-full rounded-full relative"
-                                initial={{ width: 0 }}
-                                whileInView={{ width: `${skill.level}%` }}
-                                transition={{ duration: 1.2, delay: skillIndex * 0.1 }}
-                                viewport={{ once: true }}
-                              >
-                                <div className="absolute inset-0 bg-white/20 animate-pulse rounded-full"></div>
-                              </motion.div>
-                            </div>
-                            <span className="text-sm text-primary-300 font-medium">{skill.level}%</span>
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
+            <p className="text-gray-400 mt-4">Loading skills...</p>
+          </div>
+        ) : (
+          <div className="space-y-20">
+            {Object.entries(groupedSkills).map(([category, categorySkills]) => (
+              <motion.div
+                key={category}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+              >
+                {/* Category Title - Improved Typography */}
+                <div className="text-center mb-10">
+                  <h3 className="text-xl font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                    {category}
+                  </h3>
+                  <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
+                </div>
+
+                {/* Skills Grid - Properly Centered */}
+                <div className="flex justify-center">
+                  <div className="inline-grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                    {categorySkills.map((skill, index) => (
+                      <motion.div
+                        key={skill.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: index * 0.05 }}
+                        className="glass-card rounded-2xl p-6 text-center hover:bg-white/10 transition-all group cursor-pointer w-40"
+                      >
+                        {/* Icon */}
+                        <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                          {skill.icon}
+                        </div>
+                        
+                        {/* Name */}
+                        <h4 className="text-sm font-semibold text-white mb-3 min-h-[40px] flex items-center justify-center">
+                          {skill.name}
+                        </h4>
+                        
+                        {/* Progress Circle */}
+                        <div className="relative w-16 h-16 mx-auto">
+                          <svg className="transform -rotate-90 w-16 h-16">
+                            <circle
+                              cx="32"
+                              cy="32"
+                              r="28"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                              fill="none"
+                              className="text-gray-700"
+                            />
+                            <motion.circle
+                              cx="32"
+                              cy="32"
+                              r="28"
+                              stroke="url(#gradient)"
+                              strokeWidth="4"
+                              fill="none"
+                              strokeLinecap="round"
+                              initial={{ strokeDasharray: "0 175.93" }}
+                              whileInView={{ 
+                                strokeDasharray: `${(skill.level / 100) * 175.93} 175.93` 
+                              }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 1, ease: "easeOut" }}
+                            />
+                            <defs>
+                              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#3b82f6" />
+                                <stop offset="100%" stopColor="#a855f7" />
+                              </linearGradient>
+                            </defs>
+                          </svg>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <span className="text-sm font-bold text-white">
+                              {skill.level}%
+                            </span>
                           </div>
-                        </motion.div>
-                      ))}
-                    </div>
+                        </div>
+                      </motion.div>
+                    ))}
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        )}
+
+        {/* Download Resume Button - Centered */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          className="text-center mt-20"
+        >
+          <a
+            href="https://www.linkedin.com/in/sanjay-ram-j"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
+          >
+            Download Resume
+          </a>
+        </motion.div>
       </div>
     </section>
   )

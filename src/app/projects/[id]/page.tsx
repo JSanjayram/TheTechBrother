@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { ExternalLink, Github, ArrowLeft, Tag, FileText, Book, Presentation, Lock, Eye, EyeOff } from 'lucide-react'
+import { ExternalLink, Github, ArrowLeft, Tag, FileText, Book, Presentation, Lock, Eye, EyeOff, Sparkles, CheckCircle2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { getProjectById, getAllCategories } from '@/lib/adminService'
@@ -27,44 +27,46 @@ const PresentationSection = ({ presentationUrl, passkey }: { presentationUrl: st
   if (!isUnlocked) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.7 }}
-        className="glass-effect rounded-2xl p-8 mb-12"
+        transition={{ duration: 0.6 }}
+        className="glass-card rounded-3xl p-8 mb-12 border border-blue-500/20 text-center"
       >
-        <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-          <Lock className="mr-3 text-primary-400" size={24} />
+        <div className="w-14 h-14 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 flex items-center justify-center mx-auto mb-4">
+          <Lock size={26} />
+        </div>
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
           Protected Presentation
         </h2>
-        <div className="text-center py-12">
-          <Lock className="mx-auto mb-4 text-gray-400" size={48} />
-          <p className="text-gray-300 mb-6">This presentation is password protected</p>
-          <div className="max-w-sm mx-auto">
-            <div className="relative mb-4">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={inputPasskey}
-                onChange={(e) => setInputPasskey(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleUnlock()}
-                placeholder="Enter passkey"
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-primary-400 pr-12"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white"
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-            {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+        <p className="text-slate-400 text-sm mb-6 max-w-md mx-auto">
+          This project presentation requires authorized clearance. Please enter the passkey to unlock the interactive deck.
+        </p>
+
+        <div className="max-w-sm mx-auto">
+          <div className="relative mb-3">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={inputPasskey}
+              onChange={(e) => setInputPasskey(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleUnlock()}
+              placeholder="Enter access passkey..."
+              className="w-full px-4 py-3 rounded-xl glass-input text-white text-sm placeholder-slate-500 focus:outline-none pr-11"
+            />
             <button
-              onClick={handleUnlock}
-              className="w-full px-4 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3.5 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-white"
             >
-              Unlock Presentation
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
+          {error && <p className="text-red-400 text-xs mb-3 font-medium">{error}</p>}
+          <button
+            onClick={handleUnlock}
+            className="btn-royal w-full py-3 px-6 rounded-xl font-bold text-sm shadow-lg"
+          >
+            Unlock Deck
+          </button>
         </div>
       </motion.div>
     )
@@ -72,16 +74,21 @@ const PresentationSection = ({ presentationUrl, passkey }: { presentationUrl: st
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 25 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.7 }}
-      className="glass-effect rounded-2xl p-8 mb-12"
+      transition={{ duration: 0.6 }}
+      className="glass-card rounded-3xl p-6 sm:p-8 mb-12 border border-blue-500/20"
     >
-      <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-        <Presentation className="mr-3 text-primary-400" size={24} />
-        Project Presentation
-      </h2>
-      <div className="relative w-full h-96 rounded-lg overflow-hidden">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center">
+          <Presentation size={20} />
+        </div>
+        <div>
+          <h2 className="text-xl font-bold text-white">Interactive Presentation</h2>
+          <p className="text-xs text-blue-400 font-medium">Slide deck and architecture walkthrough</p>
+        </div>
+      </div>
+      <div className="relative w-full h-96 sm:h-[480px] rounded-2xl overflow-hidden border border-blue-500/20 bg-black">
         <iframe
           src={presentationUrl}
           className="w-full h-full border-0"
@@ -108,7 +115,7 @@ export default function ProjectDetailPage() {
             getProjectById(params.id as string),
             getAllCategories()
           ])
-          
+
           if (projectData) {
             setProject(projectData)
             const projectCategory = categoriesData.find(cat => cat.id === projectData.categoryId)
@@ -125,32 +132,28 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen">
-        <Navbar />
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary-400"></div>
-            <p className="text-gray-300 mt-4">Loading project...</p>
-          </div>
+      <main className="min-h-screen bg-[#080a15] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-3 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-slate-400 text-sm">Loading project showcase...</p>
         </div>
-        <Footer />
       </main>
     )
   }
 
   if (!project) {
     return (
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-[#080a15] relative overflow-hidden flex flex-col justify-between">
         <Navbar />
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-white mb-4">Project Not Found</h1>
-            <p className="text-gray-300 mb-6">The project you're looking for doesn't exist.</p>
+        <div className="max-w-md mx-auto text-center px-4 py-36">
+          <div className="glass-card rounded-3xl p-8 border border-blue-500/20">
+            <h1 className="text-2xl font-bold text-white mb-2">Project Not Found</h1>
+            <p className="text-slate-400 text-sm mb-6">The project details you're looking for do not exist or have moved.</p>
             <button
               onClick={() => router.push('/projects')}
-              className="px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+              className="btn-royal px-6 py-3 rounded-xl font-bold text-sm"
             >
-              Back to Projects
+              Browse All Projects
             </button>
           </div>
         </div>
@@ -160,154 +163,162 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <main className="min-h-screen">
-      <Navbar />
-      
-      <section className="py-20 relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen relative overflow-hidden bg-[#080a15]">
+      {/* Background Ambient Glows */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-40" />
+        <div className="absolute -top-32 -left-32 w-[32rem] h-[32rem] bg-blue-600/20 rounded-full blur-[140px]" />
+        <div className="absolute top-1/2 -right-32 w-[32rem] h-[32rem] bg-purple-600/15 rounded-full blur-[140px]" />
+      </div>
+
+      <div className="relative z-10">
+        <Navbar />
+
+        <section className="pt-36 pb-24 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6">
+            
+            {/* Back button */}
             <motion.button
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -15 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6 }}
+              transition={{ duration: 0.5 }}
               onClick={() => router.push('/projects')}
-              className="flex items-center text-gray-300 hover:text-primary-400 transition-colors mb-8 group"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass-card hover:border-blue-400/40 text-xs font-semibold text-slate-300 hover:text-white mb-8 group transition-all hover:scale-105"
             >
-              <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to Projects
+              <ArrowLeft size={15} className="group-hover:-translate-x-1 transition-transform" />
+              <span>Back to Projects Archive</span>
             </motion.button>
 
+            {/* Project Header */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.6 }}
               className="text-center mb-12"
             >
-              <div className="flex items-center justify-center gap-4 mb-4">
-                {category && (
-                  <span className="px-3 py-1 bg-primary-600 text-white text-sm rounded-full flex items-center">
-                    <Tag size={14} className="mr-1" />
-                    {category.name}
-                  </span>
-                )}
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                <span className="text-white">{project.title}</span>
+              {category && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full badge-royal text-xs font-medium mb-4">
+                  <Tag size={12} className="text-blue-400" />
+                  <span>{category.name}</span>
+                </div>
+              )}
+
+              <h1 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                {project.title}
               </h1>
-              
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+
+              <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto mb-8 leading-relaxed">
                 {project.description}
               </p>
 
+              {/* Action Buttons */}
               <div className="flex flex-wrap items-center justify-center gap-4">
                 {project.github && (
-                  <motion.a
+                  <a
                     href={project.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 rounded-2xl glass-card hover:bg-white/10 text-white font-semibold text-sm border border-slate-700 transition-all hover:scale-105"
                   >
-                    <Github size={20} className="mr-2" />
-                    View Code
-                  </motion.a>
+                    <Github size={18} />
+                    <span>View Repository</span>
+                  </a>
                 )}
-                
+
                 {project.live && (
-                  <motion.a
+                  <a
                     href={project.live}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                    className="btn-royal flex items-center gap-2 px-7 py-3 rounded-2xl font-bold text-sm shadow-lg transition-all"
                   >
-                    <ExternalLink size={20} className="mr-2" />
-                    Live Demo
-                  </motion.a>
+                    <ExternalLink size={18} />
+                    <span>Open Live Demo</span>
+                  </a>
                 )}
               </div>
             </motion.div>
 
+            {/* Featured Image */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 0.7, delay: 0.15 }}
               className="mb-12"
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+              <div className="glass-card rounded-3xl p-2 sm:p-3 overflow-hidden border border-blue-500/20 shadow-2xl">
                 <img
-                  src={project.image}
+                  src={project.image || '/spotify-tv-app-revamped-home-screen (1).png.jpg'}
                   alt={project.title}
-                  className="w-full h-64 md:h-96 object-cover"
+                  className="w-full h-72 sm:h-[450px] object-cover rounded-2xl"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
               </div>
             </motion.div>
 
+            {/* Technologies Grid */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="mb-12"
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="mb-12 text-center"
             >
-              <h2 className="text-2xl font-bold text-white mb-6 text-center">
+              <h2 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-4">
                 Technologies Used
               </h2>
-              <div className="flex flex-wrap justify-center gap-3">
-                {project.tech.map((tech, index) => (
-                  <motion.span
+              <div className="flex flex-wrap justify-center gap-2">
+                {project.tech?.map((tech) => (
+                  <span
                     key={tech}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                    className="px-4 py-2 bg-gray-800/50 border border-gray-600 text-gray-300 rounded-lg hover:border-primary-400 transition-colors"
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-medium glass-card border border-blue-500/20 text-slate-200"
                   >
                     {tech}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
             </motion.div>
 
+            {/* Overview & Key Highlights */}
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 25 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="glass-effect rounded-2xl p-8 mb-12"
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="glass-card rounded-3xl p-7 sm:p-9 mb-12 border border-blue-500/20"
             >
-              <h2 className="text-2xl font-bold text-white mb-6">Project Details</h2>
+              <h2 className="text-xl font-bold text-white mb-6">Project Details</h2>
               <div className="grid md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-lg font-semibold text-primary-400 mb-3">Overview</h3>
-                  <p className="text-gray-300 leading-relaxed">
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-blue-400 mb-3">
+                    Overview
+                  </h3>
+                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
                     {project.description}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-primary-400 mb-3">Key Features</h3>
-                  <ul className="text-gray-300 space-y-2">
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-primary-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Modern and responsive design
+                  <h3 className="text-sm font-semibold uppercase tracking-wider text-blue-400 mb-3">
+                    Key Features
+                  </h3>
+                  <ul className="space-y-2.5 text-xs sm:text-sm text-slate-300">
+                    <li className="flex items-center gap-2.5">
+                      <CheckCircle2 size={16} className="text-blue-400 shrink-0" />
+                      <span>Modern and responsive user experience</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-primary-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Built with latest technologies
+                    <li className="flex items-center gap-2.5">
+                      <CheckCircle2 size={16} className="text-blue-400 shrink-0" />
+                      <span>Engineered with latest full-stack technologies</span>
                     </li>
-                    <li className="flex items-start">
-                      <span className="w-2 h-2 bg-primary-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
-                      Optimized for performance
+                    <li className="flex items-center gap-2.5">
+                      <CheckCircle2 size={16} className="text-blue-400 shrink-0" />
+                      <span>Optimized for performance across all devices</span>
                     </li>
                   </ul>
                 </div>
               </div>
             </motion.div>
 
-            {/* Presentation Section */}
+            {/* Interactive Presentation Deck */}
             {project.presentationUrl && (
-              <PresentationSection 
+              <PresentationSection
                 presentationUrl={project.presentationUrl}
                 passkey={project.presentationPasskey}
               />
@@ -316,58 +327,54 @@ export default function ProjectDetailPage() {
             {/* Documentation Section */}
             {project.documentationUrl && (
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                className="glass-effect rounded-2xl p-8 mb-12"
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="glass-card rounded-3xl p-8 mb-12 text-center border border-blue-500/20"
               >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                  <Book className="mr-3 text-primary-400" size={24} />
-                  Documentation
-                </h2>
-                <div className="text-center">
-                  <p className="text-gray-300 mb-6">
-                    Access the complete project documentation for detailed information about implementation, setup, and usage.
-                  </p>
-                  <motion.a
-                    href={project.documentationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-flex items-center px-6 py-3 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                  >
-                    <FileText size={20} className="mr-2" />
-                    View Documentation
-                  </motion.a>
+                <div className="w-12 h-12 rounded-2xl bg-blue-600/20 text-blue-400 flex items-center justify-center mx-auto mb-4 shadow-md">
+                  <Book size={22} />
                 </div>
+                <h2 className="text-xl font-bold text-white mb-2">Documentation</h2>
+                <p className="text-slate-400 text-sm max-w-lg mx-auto mb-6">
+                  Access the complete project documentation for detailed information about implementation, setup, and usage.
+                </p>
+                <a
+                  href={project.documentationUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-royal inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm shadow-md"
+                >
+                  <FileText size={16} />
+                  <span>View Documentation</span>
+                </a>
               </motion.div>
             )}
 
-            {/* README Section */}
+            {/* README Content */}
             {project.readmeContent && (
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.9 }}
-                className="glass-effect rounded-2xl p-8 mb-12"
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="glass-card rounded-3xl p-7 sm:p-9 mb-12 border border-blue-500/20"
               >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-                  <FileText className="mr-3 text-primary-400" size={24} />
-                  README
-                </h2>
-                <div className="bg-gray-900/50 rounded-lg p-6 border border-gray-700">
-                  <pre className="text-gray-300 whitespace-pre-wrap font-mono text-sm leading-relaxed overflow-x-auto">
+                <div className="flex items-center gap-2.5 mb-5">
+                  <FileText className="text-blue-400" size={20} />
+                  <h2 className="text-lg font-bold text-white">README</h2>
+                </div>
+                <div className="bg-[#0a0f26] rounded-2xl p-5 border border-blue-500/20 overflow-x-auto">
+                  <pre className="text-slate-300 font-mono text-xs sm:text-sm leading-relaxed whitespace-pre-wrap">
                     {project.readmeContent}
                   </pre>
                 </div>
               </motion.div>
             )}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Footer />
+        <Footer />
+      </div>
     </main>
   )
 }

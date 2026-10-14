@@ -1,14 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { getSkills, getCategories } from '@/lib/portfolioService'
 import { Skill, Category } from '@/types/portfolio'
+import { Sparkles } from 'lucide-react'
 
 const SkillsStack = () => {
   const [skills, setSkills] = useState<Skill[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
+  const [activeCategory, setActiveCategory] = useState<string>('all')
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,134 +33,138 @@ const SkillsStack = () => {
     return acc
   }, {} as Record<string, Skill[]>)
 
+  const filteredCategories = activeCategory === 'all'
+    ? Object.entries(groupedSkills)
+    : Object.entries(groupedSkills).filter(([name]) => name === activeCategory)
+
   return (
-    <section id="skills" className="py-24 px-4 scroll-mt-20">
-      <div className="max-w-6xl mx-auto">
-        {/* Header - Centered */}
+    <section id="skills" className="py-24 relative overflow-hidden scroll-mt-20">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        
+        {/* Header */}
         <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          initial={{ opacity: 0, y: 25 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-16"
         >
-          <h2 className="text-heading mb-6">
-            <span className="text-white">Skills </span>
-            <span className="text-gradient">Stack</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full badge-royal text-xs sm:text-sm font-semibold tracking-wider uppercase mb-3">
+            <Sparkles size={14} className="text-blue-400" />
+            <span>Technologies & Tools</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-bold text-white tracking-tight">
+            Skills <span className="text-gradient">Stack</span>
           </h2>
-          <p className="text-body max-w-2xl mx-auto">
-            Technologies and tools I use to build exceptional digital experiences
+          <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto mt-3">
+            Technologies and tools I use to build exceptional digital experiences.
           </p>
+
+          {/* Category Filter Pills */}
+          {!loading && categories.length > 0 && (
+            <div className="flex flex-wrap items-center justify-center gap-2 mt-8">
+              <button
+                onClick={() => setActiveCategory('all')}
+                className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                  activeCategory === 'all'
+                    ? 'btn-royal text-white shadow-md'
+                    : 'glass-pill text-slate-300 hover:text-white hover:border-blue-400/40'
+                }`}
+              >
+                All Skills
+              </button>
+              {categories.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.name)}
+                  className={`px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all ${
+                    activeCategory === cat.name
+                      ? 'btn-royal text-white shadow-md'
+                      : 'glass-pill text-slate-300 hover:text-white hover:border-blue-400/40'
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              ))}
+            </div>
+          )}
         </motion.div>
 
         {loading ? (
-          <div className="text-center py-12">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent"></div>
-            <p className="text-gray-400 mt-4">Loading skills...</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
+              <div key={n} className="glass-card rounded-2xl p-6 text-center animate-pulse space-y-3">
+                <div className="w-12 h-12 bg-slate-800/60 rounded-xl mx-auto" />
+                <div className="h-4 w-20 bg-slate-800/60 rounded mx-auto" />
+                <div className="h-2 w-full bg-slate-800/40 rounded-full" />
+              </div>
+            ))}
           </div>
         ) : (
-          <div className="space-y-20">
-            {Object.entries(groupedSkills).map(([category, categorySkills]) => (
-              <motion.div
-                key={category}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-              >
-                {/* Category Title - Improved Typography */}
-                <div className="text-center mb-10">
-                  <h3 className="text-xl font-semibold text-gray-400 uppercase tracking-wider mb-2">
-                    {category}
-                  </h3>
-                  <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full"></div>
-                </div>
+          <div className="space-y-16">
+            <AnimatePresence mode="wait">
+              {filteredCategories.map(([category, categorySkills]) => (
+                <motion.div
+                  key={category}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Category Title */}
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="h-4 w-1 rounded-full bg-gradient-to-b from-blue-500 via-indigo-500 to-purple-500" />
+                    <h3 className="text-base sm:text-lg font-bold text-slate-200 uppercase tracking-wide">
+                      {category}
+                    </h3>
+                    <div className="h-px flex-1 bg-slate-800/80 ml-2" />
+                  </div>
 
-                {/* Skills Grid - Properly Centered */}
-                <div className="flex justify-center">
-                  <div className="inline-grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                  {/* Skills Grid */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6">
                     {categorySkills.map((skill, index) => (
                       <motion.div
                         key={skill.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.05 }}
-                        className="glass-card rounded-2xl p-6 text-center hover:bg-white/10 transition-all group cursor-pointer w-40"
+                        transition={{ delay: index * 0.03 }}
+                        whileHover={{ y: -5 }}
+                        className="glass-card rounded-3xl p-5 text-center flex flex-col items-center justify-between group hover:border-blue-400/40 transition-all cursor-default border border-blue-500/20"
                       >
                         {/* Icon */}
-                        <div className="text-6xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <div className="text-4xl sm:text-5xl mb-3 group-hover:scale-110 transition-transform duration-300">
                           {skill.icon}
                         </div>
-                        
+
                         {/* Name */}
-                        <h4 className="text-sm font-semibold text-white mb-3 min-h-[40px] flex items-center justify-center">
+                        <h4 className="text-sm font-semibold text-white mb-3 text-center line-clamp-1 group-hover:text-blue-400 transition-colors">
                           {skill.name}
                         </h4>
-                        
-                        {/* Progress Circle */}
-                        <div className="relative w-16 h-16 mx-auto">
-                          <svg className="transform -rotate-90 w-16 h-16">
-                            <circle
-                              cx="32"
-                              cy="32"
-                              r="28"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                              fill="none"
-                              className="text-gray-700"
-                            />
-                            <motion.circle
-                              cx="32"
-                              cy="32"
-                              r="28"
-                              stroke="url(#gradient)"
-                              strokeWidth="4"
-                              fill="none"
-                              strokeLinecap="round"
-                              initial={{ strokeDasharray: "0 175.93" }}
-                              whileInView={{ 
-                                strokeDasharray: `${(skill.level / 100) * 175.93} 175.93` 
-                              }}
+
+                        {/* Progress Bar & Level */}
+                        <div className="w-full space-y-1.5">
+                          <div className="flex items-center justify-between text-xs text-slate-400">
+                            <span>Proficiency</span>
+                            <span className="font-semibold text-blue-400">{skill.level}%</span>
+                          </div>
+                          <div className="w-full h-1.5 bg-slate-800/80 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${skill.level}%` }}
                               viewport={{ once: true }}
-                              transition={{ duration: 1, ease: "easeOut" }}
+                              transition={{ duration: 0.8, ease: 'easeOut' }}
+                              className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"
                             />
-                            <defs>
-                              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" stopColor="#3b82f6" />
-                                <stop offset="100%" stopColor="#a855f7" />
-                              </linearGradient>
-                            </defs>
-                          </svg>
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <span className="text-sm font-bold text-white">
-                              {skill.level}%
-                            </span>
                           </div>
                         </div>
                       </motion.div>
                     ))}
                   </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
         )}
-
-        {/* Download Resume Button - Centered */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="text-center mt-20"
-        >
-          <a
-            href="https://www.linkedin.com/in/sanjay-ram-j"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-10 py-5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-2xl font-bold text-lg transition-all shadow-lg hover:shadow-xl"
-          >
-            Download Resume
-          </a>
-        </motion.div>
       </div>
     </section>
   )
